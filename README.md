@@ -1,180 +1,259 @@
-# QTip Coding Challenge  
-_A lightweight, fun test of data detection, tokenization, classification, and full-stack ability._
+# QTip Coding Challenge
+
+## Table of Contents
+
+- [Expected Outputs](#expected-outputs)
+- [Overview](#overview)
+- [Requirements](#requirements)
+  - [1. Frontend](#1-frontend)
+  - [2. Backend](#2-backend)
+  - [3. Database](#3-database)
+- [Optional Extension: Multiple Classification Types](#optional-extension-multiple-classification-types)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Deployment](#deployment)
+- [Submission](#submission)
 
 ---
 
-## 🧩 Overview
+## Expected Outputs
 
-People paste sensitive information into tools constantly without realising it.  
-Your job is to build a tiny prototype — **QTip** — that behaves like a *“data spellchecker”* for sensitive data.
+By the end of this challenge, you should deliver:
 
-This challenge is intentionally small.  
-We want to see **how you think**, **how you structure code**, and **how you solve problems end-to-end**, not how many hours you can grind.
+### 1. Working Application
+A fully functional system accessible via:
+```bash
+docker compose up
+```
 
-You are free to choose your own architecture, folder structure, and implementation patterns.
+### 2. User Experience
+- A web interface with a multiline text input
+- Real-time visual detection of email addresses (underlined with tooltip)
+- A submit button that sends text to the backend
+- A statistics panel showing the total count of PII emails detected across all submissions
+
+### 3. Backend Processing
+- Detection and classification of email addresses with the tag `"pii.email"`
+- Tokenization of detected emails (replacing them with unique tokens)
+- Persistence of both tokenized text and classification records
+- API endpoint(s) for retrieving statistics
+
+### 4. Data Architecture
+- Database schema supporting tokenized submissions and classification vault
+- Clear separation between tokenized content and sensitive values
+
+### 5. Documentation
+A README explaining:
+- How to run the application
+- Architectural decisions made
+- Any assumptions or trade-offs
+- (Optional) Implementation notes for extensions
 
 ---
 
-## 🎯 Core Requirements
+## Overview
 
-### 1. Frontend Behaviour
+Users frequently paste sensitive information into applications without realizing it. Your task is to build a prototype system called **QTip** that detects, classifies, and tokenizes sensitive data—functioning as a "data spellchecker" for personally identifiable information (PII).
 
-Build a simple page that includes:
+The core concept is **data protection through tokenization**: when sensitive information is detected, it should be replaced with tokens, allowing the system to maintain context and analytics while handling the actual sensitive values securely.
 
-#### **A multiline text box**
-Users can freely type or paste text into it.
+### Objectives
 
-As soon as an **email address** appears:
+This challenge evaluates your ability to:
+- Design and implement end-to-end solutions
+- Write clean, maintainable code
+- Make pragmatic architectural decisions
+- Balance trade-offs appropriately
 
-- It must be visually underlined (a squiggly/wavy underline)
-- On hover, a tooltip should appear saying something like:  
-  **"PII – Email Address"**
+### Scope
 
-You are free to implement this however you like  
-(e.g. contenteditable, overlaying spans, etc.).
+This is intentionally a small, focused challenge. You should be able to complete it in a few hours. You are free to choose your own architecture, folder structure, and implementation patterns.
 
-#### **A Submit button**
-When clicked, the full content of the text box is sent to the backend.
+### Need Help?
 
-#### **A statistics panel (right side)**
-A simple box displaying:
+**Please don't struggle in silence.** If you encounter blockers, have questions about requirements, or need clarification on any aspect of the challenge, reach out to us. We value communication and the ability to ask for help when needed—these are important professional qualities.
+
+---
+
+## Requirements
+
+### 1. Frontend
+
+Build a web interface with the following components:
+
+#### Text Input Area
+- Multiline text input that accepts user typing and pasting
+- Real-time detection of email addresses
+- Visual indication: underline detected emails (squiggly or wavy style)
+- Tooltip on hover: Display **"PII – Email Address"**
+- Implementation approach is your choice (contenteditable, overlays, etc.)
+
+#### Submit Button
+- Triggers submission of the complete text content to the backend
+
+#### Statistics Panel
+Display a panel showing:
 
 ```
 Total PII emails submitted: X
 ```
 
-Where `X` must come from the backend and reflect:
-
-- All previously submitted emails  
-- Persisted across page reloads
-
-The panel must update after each submission.
+**Requirements:**
+- Count must be retrieved from the backend
+- Must persist across page reloads
+- Must update after each submission
 
 ---
 
-### 2. Backend Behaviour
+### 2. Backend
 
-When the frontend sends the submitted text:
+Implement the following processing pipeline for submitted text:
 
-1. The backend must detect **all email addresses** inside it.
-2. Each detected email must be given a classification tag  
-   (we will provide the tag name, e.g. `"PII.Email"`).
-3. The backend must **tokenize** the submitted text by replacing each detected email address with a **random token**.
-   - Each email → its own unique token  
-   - Token format is up to you (e.g. `{{TKN-abc123}}`, `__emailToken1__`, etc.)
-4. The backend must persist:
-   - The **tokenized text submission**
-   - Each **detected email** as its own stored classification record
-     - including the token
-     - and the original email value
-     - and the classification tag
+#### Detection
+Identify all email addresses in the submitted text.
 
-5. The backend must expose a way for the frontend to retrieve:
-   - The total number of PII email items submitted so far
+#### Classification
+Assign the classification tag **`"pii.email"`** to each detected email address.
 
-> You are free to structure the backend however you like.  
-> Minimal APIs, controllers, services, DDD-lite — up to you.
+#### Tokenization
+The key requirement is **tokenization for data protection**:
+- Replace each detected email address with a unique token
+- Each email must map to a distinct token
+- This allows the text content to be safely processed and stored while maintaining structure
+- Token format is your choice (e.g., `{{TKN-abc123}}`, `__emailToken1__`)
 
----
+#### Persistence
+Design your data storage to support the tokenization model:
 
-### 3. Database Requirements
+1. **Submission Record**: Store the tokenized version of the text (emails replaced by tokens)
+2. **Classification Records**: Store metadata about detected sensitive data (one record per email):
+   - The unique token (links back to the tokenized text)
+   - The original email value (for the vault/classification store)
+   - The classification tag (`"pii.email"`)
 
-You may use any relational database (SQLite, Postgres, SQL Server, etc.).
+This separation allows you to handle sensitive values differently from the tokenized content.
 
-Your database must persist:
+#### API Endpoints
+Provide an endpoint that returns:
+- The total count of all PII email items submitted across all submissions
 
-- Tokenized text submissions
-- Classified email items  
-  (one row per detected email)
-
-Schema design is entirely up to you, but keep it sensible and readable.
+**Implementation:** You are free to structure the backend as you see fit (Minimal APIs, MVC, layered architecture, etc.).
 
 ---
 
-## ⭐ Optional Part 2: Dynamic Classification Tags
+### 3. Database
 
-If you have spare time (totally optional), you can implement:
+#### Database Selection
+Use any relational database (SQLite, PostgreSQL, SQL Server, etc.).
 
-> **User- or developer-defined classification types**, each with a  
-> - tag name  
-> - regex pattern  
+#### Data Model
+Design a schema that supports the tokenization architecture:
+- **Tokenized submissions**: Store the processed text with tokens in place of sensitive data
+- **Classification vault**: Store the detected sensitive items with their tokens and metadata
 
-For example:
+This approach separates the usage context (tokenized text) from the sensitive values (classification records).
 
-| Tag Name         | Regex Pattern      |
-|------------------|--------------------|
-| `Finance.IBAN`   | IBAN regex         |
-| `PII.Phone`      | phone regex        |
-| `Security.Token` | API key regex      |
-
-When part 2 is implemented:
-
-- On submission:
-  - The backend should run all defined tag patterns against the text
-  - Tokenize each detected match
-  - Persist the classifications just like emails
-
-You do *not* need to add UI for creating rules (unless you want to).  
-Hard-coded, JSON-backed, or DB-seeded rules are all acceptable.
-
-Please note in the README how you implemented this if you choose to do it.
+Schema design is your choice. Prioritize clarity and maintainability.
 
 ---
 
-## 🧪 What We’re Looking For
+## Optional Extension: Multiple Classification Types
 
-We evaluate:
+**This is entirely optional.** If you choose to implement it, extend the system to support multiple types of sensitive data beyond email addresses.
 
-### ✔️ Clarity of thinking  
-### ✔️ Clean, maintainable backend code  
-### ✔️ Correct tokenization logic  
-### ✔️ Accurate detection and classification  
-### ✔️ A functional UI with real-time highlighting  
-### ✔️ A working end-to-end flow  
-### ✔️ Sensible trade-offs  
-### ✔️ A working Docker Compose setup
+### Requirements
 
-We **do not** expect:
+Allow configuration of multiple classification types, where each type includes:
+- A tag name
+- A detection mechanism (implementation approach is your choice)
 
-- Perfect styling  
-- Production-grade complexity  
-- Tests (unless you want to include them)  
-- Enterprise patterns or overengineering  
+**Example classification types:**
 
-This should be a **small** project built in **a few focused hours**, not a weekend killer.
+| Tag Name         | Data Type       |
+|------------------|-----------------|
+| `finance.iban`   | IBAN numbers    |
+| `pii.phone`      | Phone numbers   |
+| `security.token` | API keys/tokens |
+
+### Implementation
+
+The backend should:
+1. Detect all configured data types in the submitted text
+2. Tokenize each detected match (similar to email handling)
+3. Persist classifications with their appropriate tags
+
+### Configuration Management
+
+You do **not** need to build a UI for managing classification rules. Acceptable approaches include:
+- Hard-coded configuration
+- JSON configuration files
+- Database-seeded rules
+
+**If you implement this extension, document your approach and design decisions in your submission README.**
 
 ---
 
-## 🐳 Final Deliverable: Docker Compose
+## Evaluation Criteria
 
-Your final submission must include a **Docker Compose** setup that runs:
+### What We Value
 
-- The backend  
-- The database  
-- The frontend  
+- **Clear thinking**: Logical approach to problem-solving
+- **Code quality**: Clean, maintainable backend implementation
+- **Correctness**: Accurate tokenization logic and data detection
+- **Functional UI**: Real-time highlighting that works as specified
+- **End-to-end integration**: Complete, working data flow from frontend to database
+- **Pragmatic decisions**: Sensible trade-offs appropriate for the scope
+- **Communication**: Willingness to ask questions and seek clarification when needed
+- **Deployment**: Working Docker Compose setup
 
-Running:
+### What We Do NOT Expect
+
+- Polished visual design or styling
+- Production-grade error handling or edge case coverage
+- Comprehensive test suites (though welcome if you choose to include them)
+- Enterprise architecture patterns or overengineering
+
+### Time Investment
+
+This challenge is designed to be completed in **a few focused hours**. It is not intended to be a weekend-long project.
+
+---
+
+## Deployment
+
+### Docker Compose Setup
+
+Your submission must include a Docker Compose configuration that orchestrates:
+- Backend service
+- Database service
+- Frontend service
+
+Running the following command should start the complete application:
 
 ```bash
 docker compose up
 ```
 
-should start the entire application end-to-end.
+---
+
+## Submission
+
+### Required Deliverables
+
+1. **Source code**
+   - Frontend implementation
+   - Backend implementation
+
+2. **Docker Compose configuration**
+   - Complete setup to run all services
+
+3. **Documentation (README)**
+   - Instructions for running the application
+   - Architectural decisions and assumptions
+   - Trade-offs or shortcuts taken
+   - (Optional) Implementation notes for the optional extension
 
 ---
 
-## 📦 Submission Checklist
+## Closing Notes
 
-Please submit:
-
-- Source code (frontend + backend)
-- Docker Compose file
-- A README explaining:
-  - How to run the application
-  - Any assumptions or shortcuts you took
-  - (Optional) Notes on Part 2 if implemented
-
----
-
-Good luck — and have fun with it!  
-We care far more about **how you think** than how many features you add.
+We prioritize understanding your thought process and problem-solving approach over feature completeness. Focus on demonstrating clear thinking and sound engineering judgment within the specified scope.
