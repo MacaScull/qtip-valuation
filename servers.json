@@ -1,0 +1,14 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "qtipdb",
+            "Group": "Servers",
+            "Host": "postgres",
+            "Port": 5432, 
+            "MaintenanceDB": "qtipdb",
+            "Username": "admin",
+            "SSLMode2": "prefer",
+            "Passfile": "/pgpass"
+        }
+    }
+}
