@@ -22,6 +22,7 @@ Frontend decisions and assumptions
 Backend decisions and assumptions
    - .Net clean architecture, the backend application was built utilising the clean architecture approach for a cleaner more maintainable backend, aditionally various SOLID principles were followed within the build.
    - Postgres, this database was used for ease of use alongside the EF ORM - providing strong typing, change tracking, etc. I chose this over a NoSQL database such as Mongo as it provides more structure, which works nicely for the classification model. 
+   - Data models, I designed simple data models that fit the need of the solution, utilsing simple datatypes. Even with the optional tasks I believe this would still suffice.
    - Pii detection, again, like the frontend, Regex was used. Again, like the benefits presented within the frontend, it provided an efficient and simple implementation for finding and replacing key findings within text. 
 
 Additional notes, PGAdmin has also been provided with a pre-configured DB with a username and password. These are purely set up so you can see the data within its raw form within the database.
