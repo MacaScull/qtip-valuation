@@ -1,0 +1,25 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: pre-wrap;
+  pointer-events: none;
+  z-index: 1;
+  width: 100%;
+  overflow-wrap: break-word;
+}
+
+.error-word {
+  font: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+  font-weight: inherit !important;
+  font-size: inherit !important;
+  tab-size: inherit !important;
+  text-decoration: wavy red underline 1px;
+  cursor: pointer;
+  pointer-events: auto; /* allow hover */
+}

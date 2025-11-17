@@ -1,0 +1,8 @@
+/apiservice/apiservice.api/bin
+/apiservice/apiservice.api/obj
+/apiservice/apiservice.application/bin
+/apiservice/apiservice.infrastructure/obj
+/apiservice/apiservice.domain/obj
+/apiservice/apiservice.infrastructure/bin
+/apiservice/apiservice.application/obj
+/apiservice/apiservice.domain/bin
